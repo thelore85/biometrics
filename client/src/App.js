@@ -32,8 +32,6 @@ serverUrlbuilder();
 console.log('ALERT - app running on server: ', serverUrl);
 
 
-
-
 // CLRAIFAI API NEW 
 const PAT = '87a0584c90e64c87869205181c5b18a7';
 const USER_ID = 'thelore_85';       
@@ -46,7 +44,7 @@ let IMAGE_URL = '';
 ///////////////////////////////////////////////
 
 
-/////////////////////////////////////
+////////////////////////////////////
 // Constructor
 
 const initialState = {
