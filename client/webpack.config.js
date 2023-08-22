@@ -37,7 +37,7 @@ module.exports ={
 			{
 			test:/\.svg$/, //manage .svg file
 			use:[{loader:'svg-url-loader', options:{limiit:10000,}}]
-			},
+			}
 		]
 	}
 }
