@@ -13,6 +13,27 @@ import './App.css';
 //global var
 let input = '';
 
+//server environment
+export let serverUrl;
+const serverPort = 9000;
+const serverLive = "https://face-recognition-server-ii6i.onrender.com";
+const serverLocal = `http://localhost:${serverPort}`
+
+const  appEnv = process.env.NODE_ENV || 'development';
+const serverUrlbuilder = () => {
+  if(appEnv === 'development' ){
+    serverUrl = serverLocal
+  }else{
+    serverUrl = serverLive
+  }
+};
+
+serverUrlbuilder();
+console.log('ALERT - app running on server: ', serverUrl);
+
+
+
+
 // CLRAIFAI API NEW 
 const PAT = '87a0584c90e64c87869205181c5b18a7';
 const USER_ID = 'thelore_85';       
@@ -83,10 +104,12 @@ class App extends Component{
         if(response.ok){
           this.uploadSession();
           return response.text()
+        }else{
+          console.log('ALERT: API response invalid')
         }
       })
       .then(result => this.faceDetection((this.calculateFaceBox(JSON.parse(result)))))// returning the prediction and the sqaure details
-      .catch(error => console.log('ERROR: CLARIFY API')); 
+      .catch(error => console.log('ERROR: CLARIFY API:', error)); 
 
   }
 
@@ -180,7 +203,7 @@ class App extends Component{
 
   
     //send the new session state to the db
-    fetch('https://face-recognition-server-ii6i.onrender.com/session-update',
+    fetch(`${serverUrl}/session-update`,
       {
         method: 'put',
         headers: {'Content-Type' : 'application/json'},
@@ -196,9 +219,7 @@ class App extends Component{
     }
 
   //get data from server: session-update / session-post and update App.js state
-  loadSession = (data) => {
-    console.log('DEBUGGIN -app.js - loadSession fun: ', data)
-    
+  loadSession = (data) => {    
     this.setState({
       session: {
         email: data.email,
@@ -220,7 +241,7 @@ class App extends Component{
 		return(
       
 			<div className='app-container'>
-				<Menu onRouteChange={this.onRouteChange} isSignIn={this.state.isSignIn} />
+				<Menu onRouteChange={this.onRouteChange} isSignIn={this.state.isSignIn} server={serverUrl}/>
 				<Background />
         { this.state.route === 'home'
           ? <Main user={this.state.user} session={this.state.session} onSearchClick={this.onSearchClick} onInputChange={this.onInputChange} url={this.state.url} box={this.state.boxCoordinates}/>

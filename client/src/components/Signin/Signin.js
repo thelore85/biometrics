@@ -1,6 +1,7 @@
 
 import React, { Component } from 'react';
 import './Signin.css';
+import { serverUrl } from '../../App.js';
 
 class Signin extends Component {
 
@@ -30,7 +31,7 @@ class Signin extends Component {
 
     //////////////////////////////////////////
     //CHECK USER: send login input data -> return user info -> updata app.js state.user
-    fetch('https://face-recognition-server-ii6i.onrender.com/signin',
+    fetch(`${serverUrl}/signin`,
     {
       method: 'post',
       headers: {'Content-Type' : 'application/json'},
@@ -55,7 +56,7 @@ class Signin extends Component {
   //LOAD SESSION: send user email ->  respond with last session data associated -> updatea app.js state.session
   sessionCall = () => {
 
-    fetch('https://face-recognition-server-ii6i.onrender.com/session-load',
+    fetch(`${serverUrl}/session-load`,
       {
       method: 'put',
       headers: {'Content-Type' : 'application/json'},

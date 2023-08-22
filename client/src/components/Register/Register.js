@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import './Register.css';
+import { serverUrl } from '../../App.js';
 
 
 class Register extends Component {
@@ -38,7 +39,7 @@ class Register extends Component {
 
       ////////////////////////////////////////////////////////
       //CREATE NEW USER RECORD -> return user info -> upload app.js state.user
-      fetch('https://face-recognition-server-ii6i.onrender.com/register',
+      fetch(`${serverUrl}/register`,
       {
         method: 'post',
         headers: {'Content-Type' : 'application/json'},
@@ -62,7 +63,7 @@ class Register extends Component {
 
     //////////////////////////////////////////
     //CRAETE NEW SESSION RECORD -> return session info -> updata app.js state.session
-    fetch('https://face-recognition-server-ii6i.onrender.com/session-post',
+    fetch(`${serverUrl}/session-post`,
     {
       method: 'post',
       headers: {'Content-Type' : 'application/json'},
