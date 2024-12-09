@@ -34,8 +34,8 @@ console.log('ALERT - app running on server: ', serverUrl);
 
 
 // CLRAIFAI API NEW 
-const PAT = 'cfda60885b1342c4941498454474368f';
-const USER_ID = 'thelore_85';       
+const PAT = '7432d8cd09fa40f389170376e927510e';
+const USER_ID = 'thelore_85';
 const APP_ID = 'biometrics';
 const MODEL_ID = 'face-detection';
 const MODEL_VERSION_ID = '6dc7e46bc9124c5c8824be4822abe105';
@@ -77,44 +77,40 @@ class App extends Component{
     super();
     this.state = initialState;
   }
+// API call: Image recognition
+onSearchClick = () => {
+  // update state with image info
+  this.setState({
+    url: IMAGE_URL,
+  });
 
-  // API call: Image recognition
-  onSearchClick = () => {
-    //update state with image info
-
-    this.setState({
-      url: IMAGE_URL,
+  // Passare l'URL dell'immagine al server
+  fetch(`${serverUrl}/face-recognition`, {  // Usa il tuo endpoint server
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      imageUrl: IMAGE_URL,  // Passa l'URL dell'immagine che vuoi analizzare
+    }),
+  })
+    .then(response => {
+      if (response.ok) {
+        return response.json();  // Restituisci i dati in formato JSON
+      } else {
+        console.log('ALERT: API response invalid');
+        throw new Error('Invalid response from server');
+      }
     })
-    // set clarifai api variables
-    const raw = JSON.stringify({
-      "user_app_id": { "user_id": USER_ID, "app_id": APP_ID},
-      "inputs": [{ "data": { "image": {"url": IMAGE_URL}}}]
+    .then(data => {
+      // Elabora i dati ricevuti dal server
+      this.faceDetection(this.calculateFaceBox(data));  // Passa i dati della box del volto
+    })
+    .catch(error => {
+      console.log('ERROR: Server or API issue:', error);
     });
+};
 
-
-    const requestOptions = {  
-      method: 'POST', 
-      headers: { 'Accept': 'application/json','Authorization': 'Key ' + PAT },
-      body: raw,
-      // mode: 'no-cors',
-    };
-
-  
-    //run api prediction
-    fetch("https://api.clarifai.com/v2/models/" + MODEL_ID + "/versions/" + MODEL_VERSION_ID + "/outputs", requestOptions)
-      .then(response => {
-        if(response.ok){
-          // this.uploadSession();
-          return response.text()
-        }else{          
-          console.log('ALERT: API response invalid')
-        }
-      })
-      .then(result => this.faceDetection((this.calculateFaceBox(JSON.parse(result)))))// returning the prediction and the sqaure details
-      .catch(error => console.log('ERROR: CLARIFY API:', error)); 
-  }
-
-  
 
 
   //reset state after new user login

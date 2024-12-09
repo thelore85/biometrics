@@ -28,10 +28,10 @@ const Menu = ({ onRouteChange, isSignIn }) => {
         <div className="wrapper">
           <Logo />
 
-          <div className="links">
+          {/* <div className="links">
             <a href='#' onClick={() => onRouteChange('signin')} >Log-in</a>
             <a href='#' onClick={() => onRouteChange('register')} >Register</a>
-          </div>
+          </div> */}
 
         </div>
       </section>

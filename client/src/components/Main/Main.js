@@ -13,7 +13,7 @@ const Main = ({ user, session, onSearchClick, onInputChange, url, box, }) => {
 					<button type="button" className="btn btn-primary" onClick={onSearchClick}><i className="fas fa-search"></i></button>           
 				</div>
         <FaceRecognition url={url} box={box}/>
-        <div className="session">
+        {/* <div className="session">
           <p>Hey {user.name}</p>
 					<p>Image searched: {session.entries}</p>
 					<p>Last access: {session.last_login}</p>
@@ -21,7 +21,7 @@ const Main = ({ user, session, onSearchClick, onInputChange, url, box, }) => {
           <ol>
               {session.img_search.map((url, i) => {return <li key={i}>{url}</li>})}
           </ol>
-        </div>
+        </div> */}
 		</section>
 	)
 }
