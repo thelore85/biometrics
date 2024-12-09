@@ -27,8 +27,7 @@ app.listen(port, ()=>{ console.log('app is running on: ', port) })
 
 
 ///////////////////////////////
-// DATABASE CONNECTION 
-
+// DATABASE CONNECTION
 
 //set environmental variables
 const dbHost = process.env.DB_HOST || 'ep-steep-haze-04994750-pooler.eu-central-1.aws.neon.tech';
@@ -38,6 +37,7 @@ const dbUser = process.env.DB_USER || 'default';
 const dbPassword = process.env.DB_PSW || 'AFueslZ8JQ2v';
 const dbConnection = process.env.DB_CONNECTION || '';
 const dbSSL = process.env.DB_SSL || true;
+
 
 //PostgreSql connection
 const db = knex({
@@ -52,6 +52,17 @@ const db = knex({
     ssl: dbSSL,
   }
 });
+
+
+/////////////////////////////////////////
+//// API SETTING
+// CLRAIFAI API NEW 
+const PAT = '7432d8cd09fa40f389170376e927510e';
+const USER_ID = 'thelore_85';
+const APP_ID = 'biometrics';
+const MODEL_ID = 'face-detection';
+const MODEL_VERSION_ID = '6dc7e46bc9124c5c8824be4822abe105';
+let IMAGE_URL = '';
 
 
 // Funzione per verificare la connessione
@@ -73,6 +84,32 @@ checkConnection();
 //////////////////////////////////////////////////////
 //////// ---------   END POINTS  --------------------
 //////////////////////////////////////////////////////
+
+
+
+app.post('/face-recognition', (req, res) => {
+  const { imageUrl } = req.body;
+
+  const raw = JSON.stringify({
+    user_app_id: { user_id: USER_ID, app_id: APP_ID },
+    inputs: [{ data: { image: { url: imageUrl } } }],
+  });
+
+  fetch(`https://api.clarifai.com/v2/models/${MODEL_ID}/versions/${MODEL_VERSION_ID}/outputs`, {
+    method: 'POST',
+    headers: {
+      'Accept': 'application/json',
+      'Authorization': 'Key ' + PAT,
+    },
+    body: raw,
+  })
+    .then(response => response.json())
+    .then(data => res.json(data))  // Rispondi al frontend con i dati ottenuti
+    .catch(error => {
+      console.log('Error:', error);
+      res.status(500).send('Internal Server Error');
+    });
+});
 
 
 /////////////////////////////////
