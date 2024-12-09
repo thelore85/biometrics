@@ -34,10 +34,11 @@ console.log('ALERT - app running on server: ', serverUrl);
 
 
 // CLRAIFAI API NEW 
-const PAT = '87a0584c90e64c87869205181c5b18a7';
+const PAT = 'cfda60885b1342c4941498454474368f';
 const USER_ID = 'thelore_85';       
 const APP_ID = 'biometrics';
 const MODEL_ID = 'face-detection';
+const MODEL_VERSION_ID = '6dc7e46bc9124c5c8824be4822abe105';
 let IMAGE_URL = '';
  
 ///////////////////////////////////////////////
@@ -89,15 +90,18 @@ class App extends Component{
       "user_app_id": { "user_id": USER_ID, "app_id": APP_ID},
       "inputs": [{ "data": { "image": {"url": IMAGE_URL}}}]
     });
+
+
     const requestOptions = {  
       method: 'POST', 
       headers: { 'Accept': 'application/json','Authorization': 'Key ' + PAT },
       body: raw,
       // mode: 'no-cors',
     };
+
   
     //run api prediction
-     fetch("https://api.clarifai.com/v2/models/" + MODEL_ID + "/outputs", requestOptions)
+    fetch("https://api.clarifai.com/v2/models/" + MODEL_ID + "/versions/" + MODEL_VERSION_ID + "/outputs", requestOptions)
       .then(response => {
         if(response.ok){
           // this.uploadSession();
@@ -109,6 +113,8 @@ class App extends Component{
       .then(result => this.faceDetection((this.calculateFaceBox(JSON.parse(result)))))// returning the prediction and the sqaure details
       .catch(error => console.log('ERROR: CLARIFY API:', error)); 
   }
+
+  
 
 
   //reset state after new user login
@@ -260,3 +266,13 @@ class App extends Component{
 }
 
 export default App
+
+
+
+
+
+
+
+
+
+
