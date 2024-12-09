@@ -31,13 +31,13 @@ app.listen(port, ()=>{ console.log('app is running on: ', port) })
 
 
 //set environmental variables
-const dbHost = process.env.DB_HOST || 'localhost';
+const dbHost = process.env.DB_HOST || 'ep-steep-haze-04994750-pooler.eu-central-1.aws.neon.tech';
 const dbPort = process.env.DB_PORT || 5432;
-const dbName = process.env.DB_NAME || 'image_recognition';
-const dbUser = process.env.DB_USER || '';
-const dbPassword = process.env.DB_PSW || '';
+const dbName = process.env.DB_NAME || 'verceldb';
+const dbUser = process.env.DB_USER || 'default';
+const dbPassword = process.env.DB_PSW || 'AFueslZ8JQ2v';
 const dbConnection = process.env.DB_CONNECTION || '';
-const dbSSL = process.env.DB_SSL || '';
+const dbSSL = process.env.DB_SSL || true;
 
 //PostgreSql connection
 const db = knex({
@@ -54,6 +54,22 @@ const db = knex({
 });
 
 
+// Funzione per verificare la connessione
+async function checkConnection() {
+  try {
+    await db.raw('SELECT 1'); // Query di test
+    console.log('Connesso al database con successo!');
+  } catch (error) {
+    console.error('Errore nella connessione al database:', error);
+  } finally {
+    await db.destroy(); // Chiude la connessione per evitare problemi
+  }
+}
+
+// Chiama la funzione per verificare la connessione
+checkConnection();
+
+
 //////////////////////////////////////////////////////
 //////// ---------   END POINTS  --------------------
 //////////////////////////////////////////////////////
@@ -64,9 +80,9 @@ const db = knex({
 app.post('/signin', (req, res) => {
   const { email, password } = req.body;
 
+  console.log('///////// server request', email, password)
+
   var hash = bcrypt.hashSync(password);
-
-
   db.select('*')
     .from('users')
     .where({ email })
@@ -81,7 +97,9 @@ app.post('/signin', (req, res) => {
       }
     })
     .catch(err => res.status(400).json('ERROR: server /signin'));
-});
+
+  });
+
 
 
 /////////////////////////////////

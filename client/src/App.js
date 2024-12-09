@@ -20,6 +20,7 @@ const serverLive = "https://face-recognition-server-ii6i.onrender.com";
 const serverLocal = `http://localhost:${serverPort}`
 
 const  appEnv = process.env.NODE_ENV || 'development';
+
 const serverUrlbuilder = () => {
   if(appEnv === 'development' ){
     serverUrl = serverLocal
@@ -78,38 +79,37 @@ class App extends Component{
 
   // API call: Image recognition
   onSearchClick = () => {
-
     //update state with image info
+
     this.setState({
       url: IMAGE_URL,
     })
-  
     // set clarifai api variables
     const raw = JSON.stringify({
       "user_app_id": { "user_id": USER_ID, "app_id": APP_ID},
       "inputs": [{ "data": { "image": {"url": IMAGE_URL}}}]
     });
-
     const requestOptions = {  
       method: 'POST', 
       headers: { 'Accept': 'application/json','Authorization': 'Key ' + PAT },
-      body: raw
+      body: raw,
+      // mode: 'no-cors',
     };
-
+  
     //run api prediction
      fetch("https://api.clarifai.com/v2/models/" + MODEL_ID + "/outputs", requestOptions)
       .then(response => {
         if(response.ok){
-          this.uploadSession();
+          // this.uploadSession();
           return response.text()
-        }else{
+        }else{          
           console.log('ALERT: API response invalid')
         }
       })
       .then(result => this.faceDetection((this.calculateFaceBox(JSON.parse(result)))))// returning the prediction and the sqaure details
       .catch(error => console.log('ERROR: CLARIFY API:', error)); 
-
   }
+
 
   //reset state after new user login
   resetState = () => {
@@ -241,14 +241,18 @@ class App extends Component{
 			<div className='app-container'>
 				<Menu onRouteChange={this.onRouteChange} isSignIn={this.state.isSignIn} server={serverUrl}/>
 				<Background />
-        { this.state.route === 'home'
+        
+         <Main user={this.state.user} session={this.state.session} onSearchClick={this.onSearchClick} onInputChange={this.onInputChange} url={this.state.url} box={this.state.boxCoordinates}/>
+        
+         {/* { this.state.route === 'home'
           ? <Main user={this.state.user} session={this.state.session} onSearchClick={this.onSearchClick} onInputChange={this.onInputChange} url={this.state.url} box={this.state.boxCoordinates}/>
           : (
             this.state.route === 'signin'
             ?<Signin loadUser={this.loadUser} loadSession={this.loadSession} onRouteChange={this.onRouteChange} resetState={this.resetState}/>
             :<Register loadUser={this.loadUser} loadSession={this.loadSession} onRouteChange={this.onRouteChange} resetState={this.resetState}/>
           )
-        }
+        } */}
+
 				  <Footer />
 			</div>
 		)
